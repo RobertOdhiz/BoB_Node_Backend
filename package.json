@@ -1,0 +1,16 @@
+{
+  "name": "bob_node_backend",
+  "version": "1.0.0",
+  "description": "Backend server in Node.js for Bob - Financial Literacy Platform",
+  "main": "server.js",
+  "scripts": {
+    "start-server": "nodemon server.js",
+    "test": "echo \"No test specified\" && exit 1"
+  },
+  "author": "DuniAfrika Group",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4"
+  }
+}
