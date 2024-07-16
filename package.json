@@ -5,12 +5,15 @@
   "main": "server.js",
   "scripts": {
     "start-server": "nodemon server.js",
-    "test": "echo \"No test specified\" && exit 1"
+    "test": "echo \"No test specified\" && exit 1",
+    "update-authors": "node update-authors.js"
   },
   "author": "DuniAfrika Group",
   "license": "ISC",
   "dependencies": {
+    "child_process": "^1.0.2",
     "express": "^4.19.2",
+    "fs": "^0.0.1-security",
     "nodemon": "^3.1.4"
   }
 }
