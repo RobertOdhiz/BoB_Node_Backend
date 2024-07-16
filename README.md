@@ -45,7 +45,7 @@ Bob is a financial literacy platform designed to educate users on goal setting a
 
 4. Start the server:
    ```bash
-   npm start
+   npm run start-server
    ```
 
 5. Access the server at `http://localhost:5000`.
