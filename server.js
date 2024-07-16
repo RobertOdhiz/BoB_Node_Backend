@@ -1,10 +1,15 @@
+// app.js or index.js
 const express = require('express');
-const app = express();
-const port = 5000;
+const routes = require('./Routes');
 
-app.get('/', (req, res) => {
-  res.status(200).json({ 'status': 'OK' });
-});
+const app = express();
+const port = process.env.PORT || 5000;
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Use the routes defined in routes.js
+app.use('/', routes);
 
 // Start the server
 app.listen(port, () => {
