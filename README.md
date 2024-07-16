@@ -1,3 +1,7 @@
+Here's an updated version of your README to reflect the use of Firebase Firestore and configuration via a `.env` file:
+
+---
+
 # Bob - Financial Literacy Platform Backend
 
 Bob is a financial literacy platform designed to educate users on goal setting and savings using Gemini AI technology. This repository contains the backend server for Bob, built with Node.js, SQLite3, and Express.js.
@@ -5,7 +9,7 @@ Bob is a financial literacy platform designed to educate users on goal setting a
 ## Features
 
 - **Express Server**: Backend server using Express.js for handling HTTP requests.
-- **SQLite3 Database**: Lightweight SQLite3 database for storing application data.
+- **Firebase Firestore**: Integration with Firebase Firestore for scalable and real-time data storage.
 - **Gemini AI Integration**: Integration with Gemini AI for financial literacy insights.
 
 ## Installation
@@ -21,12 +25,30 @@ Bob is a financial literacy platform designed to educate users on goal setting a
    npm install
    ```
 
-3. Start the server:
+3. Configure Environment Variables:
+   Create a `.env` file in the root directory with the following configurations:
+   ```dotenv
+   # Firebase Configuration
+   PROJECT_ID=your_project_id
+   ADM_PRIVATE_KEY_ID=your_private_key_id
+   ADM_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nYour private key here\n-----END PRIVATE KEY-----\n
+   ADM_CLIENT_EMAIL=your_client_email
+   ADM_CLIENT_ID=your_client_id
+   ADM_AUTH_URI=https://accounts.google.com/o/oauth2/auth
+   ADM_TOKEN_URI=https://oauth2.googleapis.com/token
+   ADM_AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
+   ADM_CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/your_client_email
+   ADM_UNIVERSE_DOMAIN=googleapis.com
+   ```
+
+   Replace placeholders (`your_project_id`, `your_private_key_id`, `your_private_key`, `your_client_email`, `your_client_id`) with your actual Firebase service account details.
+
+4. Start the server:
    ```bash
    npm start
    ```
 
-4. Access the server at `http://localhost:5000`.
+5. Access the server at `http://localhost:5000`.
 
 ## Usage
 
