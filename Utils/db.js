@@ -77,15 +77,19 @@ class dbClient {
     }
   }
 
-  // Private method to check if the connection is alive
-  async checkConnection() {
+   // Function to get all documents in a collection with count
+   async getAll(collection) {
     try {
-      await this.db.listCollections(); // Attempt to list collections to check connection
-      this.connected = true;
-      console.log('DB connection successful');
+      const snapshot = await this.db.collection(collection).get();
+      const count = snapshot.size;
+      const data = {};
+      snapshot.forEach(doc => {
+        data[doc.id] = doc.data();
+      });
+      return { count, [collection]: data };
     } catch (error) {
-      console.error('Error connecting to DB:', error);
-      this.connected = false;
+      console.error(`Error getting all documents in ${collection}:`, error);
+      throw error;
     }
   }
 }
