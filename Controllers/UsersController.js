@@ -40,24 +40,35 @@ class UsersController {
 
     static async loginUser(req, res) {
         const { email, password } = req.body;
-
+    
         try {
             const auth = getAuth();
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-
-            const sessionId = uuidv4();
-            const sessionData = { uid: user.uid, email: user.email, loggedIn: true, sessionId };
-
-            await DBClient.set('authenticatedUsers', user.uid, sessionData);
-
-            res.json({ message: 'User logged in successfully', user, token: `auth_${sessionId}` });
+    
+            // Check if there's an existing session for the user
+            const sessionSnapshot = await DBClient.db.collection('authenticatedUsers')
+                .where('uid', '==', user.uid)
+                .where('loggedIn', '==', true)
+                .get();
+    
+            if (sessionSnapshot.empty) {
+                const sessionId = uuidv4();
+                const sessionData = { uid: user.uid, email: user.email, loggedIn: true, sessionId };
+    
+                const docRefId = await DBClient.post('authenticatedUsers', sessionData);
+                res.json({ message: 'You have been logged in successfully', user, token: `auth_${docRefId}` });
+            } else {
+                // Extract the first document from the snapshot
+                const existingSession = sessionSnapshot.docs[0].data();
+                res.json({ message: 'You are already logged in', user, token: `auth_${existingSession.id}` });
+            }
         } catch (error) {
             let errorCode = 'unknown-error';
-
+    
             switch (error.code) {
                 case 'auth/user-not-found':
-                    errorCode = 'User does not exist';
+                    errorCode = 'No account Found';
                     break;
                 case 'auth/wrong-password':
                     errorCode = 'Incorrect password';
@@ -68,10 +79,10 @@ class UsersController {
                 default:
                     console.error('Error logging in user:', error);
             }
-
+    
             res.status(401).json({ error: errorCode });
         }
-    }
+    }    
 
     static async logoutUser(req, res) {
         const token = req.headers['x-token'];

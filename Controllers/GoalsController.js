@@ -1,4 +1,5 @@
 const dbClient = require('../Utils/db');
+const GeminiTextAI = require('../Utils/gemini')
 
 const DBClient = new dbClient();
 
@@ -44,8 +45,13 @@ class GoalsController {
     
             // Directly assign properties to goal object
             const goal = { title, description, dueDate };
+            const advice = await GeminiTextAI.getGoalAdvice(goal, req.user);
+
+            if (!advice) {
+                
+            }
     
-            await DBClient.post('goals', { userId, ...goal, achieved: false });
+            await DBClient.post('goals', { userId, ...goal, achieved: false, advice });
             res.status(201).json({ message: 'Goal set successfully' });
         } catch (error) {
             console.error('Error setting goal:', error);

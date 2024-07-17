@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@google/generative-ai": "^0.15.0",
+    "axios": "^1.7.2",
     "child_process": "^1.0.2",
     "cookie": "^0.6.0",
     "dotenv": "^16.4.5",
