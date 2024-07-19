@@ -1,10 +1,29 @@
-Here's an updated version of your README to reflect the use of Firebase Firestore and configuration via a `.env` file:
-
----
 
 # Bob - Financial Literacy Platform Backend
 
 Bob is a financial literacy platform designed to educate users on goal setting and savings using Gemini AI technology. This repository contains the backend server for Bob, built with Node.js, SQLite3, and Express.js.
+
+## Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Logging In and Obtaining the Token](#logging-in-and-obtaining-the-token)
+  - [Registering a User](#registering-a-user)
+  - [Example Usage with cURL](#example-usage-with-curl)
+    - [PowerShell](#powershell)
+    - [Bash](#bash)
+- [API Endpoints](#api-endpoints)
+  - [Health Check Route](#health-check-route)
+  - [User Routes](#user-routes)
+  - [Assessment Routes](#assessment-routes)
+  - [Goals Routes (Requires Authentication)](#goals-routes-requires-authentication)
+  - [Chats Routes (Requires Authentication)](#chats-routes-requires-authentication)
+  - [Savings Routes (Requires Authentication)](#savings-routes-requires-authentication)
+  - [Modules Routes (Requires Authentication)](#modules-routes-requires-authentication)
+- [Authors](#authors)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
@@ -48,17 +67,121 @@ Bob is a financial literacy platform designed to educate users on goal setting a
    npm run start-server
    ```
 
-5. Access the server at `http://localhost:5000`.
+5. Access the server at `https://alxrob.tech`.
 
 ## Usage
 
-- **Endpoints**: Explore the API endpoints provided by the backend.
-- **Integration**: Integrate Gemini AI for financial literacy features.
-- **Contributors**: View and acknowledge contributors in the `AUTHORS` file.
+To use the API, you need to first login to obtain an authorization token. This token will be required for accessing protected routes.
 
+### Logging In and Obtaining the Token
+
+You can login using the following credentials:
+
+- **Email**: `<your email>`
+- **Password**: `<your password>`
+
+The login endpoint will respond with a token in the format `auth_<token>`. You need to include this token in the `x-token` header to access protected routes.
+
+### Registering a User
+
+You can register a new user with the following fields:
+
+- **Mandatory**: `email`, `password`
+- **Optional but Recommended**: `displayName`, `phoneNumber`
+
+### Example Usage with cURL
+---
+#### PowerShell
+
+1. **Login and Get Token**
+   ```powershell
+   $baseUrl = "https://alxrob.tech"
+   $email = "your_email@example.com"
+   $password = "your_password"
+
+   $body = @{
+       email = $email
+       password = $password
+   } | ConvertTo-Json
+
+   $response = Invoke-RestMethod -Uri "$baseUrl/users/login" -Body $body -ContentType "application/json" -Method Post
+   $token = $response.token
+   ```
+
+2. **Access Protected Routes**
+   ```powershell
+   $headers = @{
+       "x-token" = $token
+   }
+
+   # Example: Get All Savings Records
+   $savingsUrl = "$baseUrl/savings"
+   $savingsResponse = Invoke-RestMethod -Uri $savingsUrl -Headers $headers -Method Get -ContentType "application/json"
+   Write-Host "All savings records: $($savingsResponse | ConvertTo-Json)"
+   ```
+
+#### Bash
+
+1. **Login and Get Token**
+   ```bash
+   baseUrl="https://alxrob.tech"
+   email="your_email@example.com"
+   password="your_password"
+
+   response=$(curl -s -X POST "$baseUrl/users/login" -H "Content-Type: application/json" -d "{\"email\":\"$email\", \"password\":\"$password\"}")
+   token=$(echo $response | jq -r '.token')
+   ```
+
+2. **Access Protected Routes**
+   ```bash
+   headers="-H \"x-token: $token\""
+
+   # Example: Get All Savings Records
+   savingsResponse=$(curl -s -X GET "$baseUrl/savings" $headers)
+   echo "All savings records: $savingsResponse"
+   ```
+---
 ## API Endpoints
 
-- **GET `/`:** Home route to verify server status.
+### Health Check Route
+- **GET `/`**: Home route to verify server status.
+
+### User Routes
+- **POST `/users/register`**: Register a new user.
+- **POST `/users/login`**: Login a user.
+- **POST `/users/logout`**: Logout a user.
+- **GET `/users/me`**: Get current logged in user's information.
+
+### Assessment Routes
+- **POST `/assessments/questions`**: Set assessment questions (requires authentication).
+- **GET `/assessments/questions`**: Get assessment questions.
+- **POST `/assessments/answers`**: Answer assessment questions (requires authentication).
+- **GET `/assessments/answers`**: Get answers to assessment questions (requires authentication).
+
+### Goals Routes (Requires Authentication)
+- **POST `/goals`**: Set a new goal.
+- **GET `/goals`**: Get all goals.
+- **GET `/goals/:id`**: Get a specific goal.
+- **PUT `/goals/:id`**: Update a specific goal.
+- **DELETE `/goals/:id`**: Delete a specific goal.
+
+### Chats Routes (Requires Authentication)
+- **POST `/chats`**: Start a new chat.
+- **POST `/chats/:chatId/messages`**: Send a message in a chat.
+- **GET `/chats/:chatId`**: Get a specific chat.
+- **GET `/chats`**: Get all chats.
+- **DELETE `/chats/:chatId/messages/:messageId`**: Delete a message in a chat.
+
+### Savings Routes (Requires Authentication)
+- **POST `/savings`**: Post a new savings record.
+- **GET `/savings/:savingsId`**: Get a specific savings record.
+- **GET `/savings`**: Get all savings records.
+
+### Modules Routes (Requires Authentication)
+- **POST `/modules`**: Create a new module.
+- **GET `/modules`**: Get a specific module.
+- **PUT `/modules/:moduleId/helpful`**: Update the helpful field of a module.
+- **GET `/users/modules`**: Get all modules for the user.
 
 ## Authors
 
