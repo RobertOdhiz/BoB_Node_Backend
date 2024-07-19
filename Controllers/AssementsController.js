@@ -9,16 +9,18 @@ class AssessmentController {
         if (!token || !token.startsWith('auth_')) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        console.log('Token: ', token);
+        // console.log('Token: ', token);
         const docID = token.substring(5);
-        console.log("Document ID: ", docID);
+        // console.log("Document ID: ", docID);
 
         try {
             const userSnapshot = await DBClient.get('authenticatedUsers', docID);
-            console.log('User snapshot: ', userSnapshot);
+            // console.log('User snapshot: ', userSnapshot);
             if (!userSnapshot || !userSnapshot.loggedIn) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
+
+            console.log('Auth in Assessment');
 
             req.user = userSnapshot;
             next();

@@ -34,7 +34,7 @@ class UsersController {
                     console.error('Error registering user:', error);
             }
 
-            res.status(500).json({ error: errorCode });
+            res.status(500).json({ "error": errorCode });
         }
     }
 
@@ -59,9 +59,10 @@ class UsersController {
                 const docRefId = await DBClient.post('authenticatedUsers', sessionData);
                 res.json({ message: 'You have been logged in successfully', user, token: `auth_${docRefId}` });
             } else {
-                // Extract the first document from the snapshot
-                const existingSession = sessionSnapshot.docs[0].data();
-                res.json({ message: 'You are already logged in', user, token: `auth_${existingSession.id}` });
+                // Extract the ID of the first document from the snapshot
+                const existingSessionId = sessionSnapshot.docs[0].id;
+                console.log("Existing Session ID: ", existingSessionId);
+                res.json({ message: 'You are already logged in', user, token: `auth_${existingSessionId}` });
             }
         } catch (error) {
             let errorCode = 'unknown-error';
@@ -80,14 +81,14 @@ class UsersController {
                     console.error('Error logging in user:', error);
             }
     
-            res.status(401).json({ error: errorCode });
+            res.status(401).json({ "error": errorCode });
         }
-    }    
-
+    }
+    
     static async logoutUser(req, res) {
         const token = req.headers['x-token'];
         if (!token || !token.startsWith('auth_')) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            return res.status(401).json({ "error": 'Unauthorized' });
         }
 
         const docID = token.substring(5);
@@ -105,14 +106,14 @@ class UsersController {
             res.json({ message: 'User logged out successfully' });
         } catch (error) {
             console.error('Error logging out user:', error);
-            res.status(500).json({ error: 'Logout failed' });
+            res.status(500).json({ "error": 'Logout failed' });
         }
     }
 
     static async getMe(req, res) {
         const token = req.headers['x-token'];
         if (!token || !token.startsWith('auth_')) {
-            return res.status(401).json({ error: 'Unauthorized' });
+            return res.status(401).json({ "error": 'Unauthorized' });
         }
 
         const docID = token.substring(5);
@@ -128,7 +129,7 @@ class UsersController {
             res.json({ user });
         } catch (error) {
             console.error('Error fetching current user:', error);
-            res.status(500).json({ error: 'Unable to get user' });
+            res.status(500).json({ "error": 'Unable to get user' });
         }
     }
 }

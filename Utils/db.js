@@ -77,19 +77,26 @@ class dbClient {
     }
   }
 
-   // Function to get all documents in a collection with count
-   async getAll(collection) {
+  async getAll(collection, userId = null) {
     try {
-      const snapshot = await this.db.collection(collection).get();
-      const count = snapshot.size;
-      const data = {};
-      snapshot.forEach(doc => {
-        data[doc.id] = doc.data();
-      });
-      return { count, [collection]: data };
+        let query = this.db.collection(collection);
+
+        if (userId) {
+            query = query.where('userId', '==', userId);
+        }
+
+        const snapshot = await query.get();
+        const count = snapshot.size;
+        const data = {};
+
+        snapshot.forEach(doc => {
+            data[doc.id] = doc.data();
+        });
+
+        return { count, [collection]: data };
     } catch (error) {
-      console.error(`Error getting all documents in ${collection}:`, error);
-      throw error;
+        console.error(`Error getting all documents in ${collection}:`, error);
+        throw error;
     }
   }
 }
