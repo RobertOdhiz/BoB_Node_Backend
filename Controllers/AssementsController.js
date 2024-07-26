@@ -65,7 +65,7 @@ class AssessmentController {
 
     static async answerQuestions(req, res) {
         const { answers } = req.body;
-        const userId = req.user.id;
+        const userId = req.user.uid;
     
         if (!answers || !Array.isArray(answers)) {
             return res.status(400).json({ error: 'Invalid input, expected an array of answers' });
@@ -90,7 +90,7 @@ class AssessmentController {
     
 
     static async getAnswerQuestions(req, res) {
-        const userId = req.user.id;
+        const userId = req.user.uid;
 
         try {
             const answersSnapshot = await DBClient.get('AssessmentAnswers', userId);
