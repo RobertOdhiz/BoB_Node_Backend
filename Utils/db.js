@@ -26,6 +26,10 @@ class dbClient {
 
   // Function to get data
   async get(collection, documentId) {
+    if (!documentId) {
+      console.log("No document ID provided")
+      return null;
+    }
     try {
       const docRef = this.db.collection(collection).doc(documentId);
       const doc = await docRef.get();
