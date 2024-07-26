@@ -94,8 +94,8 @@ class AssessmentController {
 
         try {
             const answersSnapshot = await DBClient.get('AssessmentAnswers', userId);
-            if (answersSnapshot.empty) {
-                return res.status(404).json({ error: 'No answers found for the user' });
+            if (!answersSnapshot) {
+                return res.status(404).json({ error: `No answers found for the user uid: ${userId}` });
             }
             const answers = answersSnapshot.docs.map(doc => doc.data());
             res.status(200).json(answers);
