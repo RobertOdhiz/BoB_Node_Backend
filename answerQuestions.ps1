@@ -1,7 +1,7 @@
 # Define variables
 $serverUrl = "http://localhost:5000"
-$email = "odhizrober254@gmail.com"
-$password = "#254@Wamalwa"
+$email = <your email>
+$password = <your password>
 
 # Function to authenticate and get the auth token
 function Get-AuthToken {
