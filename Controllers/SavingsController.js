@@ -8,13 +8,10 @@ class SavingsController {
         if (!token || !token.startsWith('auth_')) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        // console.log('Token: ', token);
         const docID = token.substring(5);
-        // console.log("Document ID: ", docID);
 
         try {
             const userSnapshot = await DBClient.get('authenticatedUsers', docID);
-            // console.log('User snapshot: ', userSnapshot);
             if (!userSnapshot || !userSnapshot.loggedIn) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
@@ -32,19 +29,22 @@ class SavingsController {
     static async postSavings(req, res) {
         const { savings } = req.body;
         const userId = req.user.uid;
+        const setDate = new Date();
 
         if (!savings) {
-            return res.status(400).json({ error: 'Savings is required' });
+            return res.status(400).json({ error: 'Savings amount is required' });
         }
 
         const savingsDoc = {
             userId,
-            savings
+            savings,
+            setDate,
+            transactionType: 'in' // Default to 'in' when adding savings
         };
 
         try {
             const savingsDocRefId = await DBClient.post('savings', savingsDoc);
-
+            
             return res.status(201).json({ message: 'Savings record created successfully', id: savingsDocRefId });
         } catch (err) {
             console.error('Error creating savings record: ', err);
@@ -87,6 +87,33 @@ class SavingsController {
         } catch (error) {
             console.error('Error retrieving savings records: ', error);
             res.status(500).json({ error: 'Internal server error while fetching all savings records' });
+        }
+    }
+
+    static async removeAmount(req, res) {
+        const { amount } = req.body;
+        const userId = req.user.uid;
+        const setDate = new Date();
+
+        if (!amount) {
+            return res.status(400).json({ error: 'Amount to remove is required' });
+        }
+
+        try {
+            // Make the amount negative and set transaction type to 'out'
+            const transactionDoc = {
+                userId,
+                savings: -Math.abs(amount),
+                transactionType: 'out',
+                setDate // Update setDate to the current date and time
+            };
+
+            await DBClient.post('savings', transactionDoc);
+
+            res.status(200).json({ message: 'Amount removed successfully', data: transactionDoc });
+        } catch (error) {
+            console.error('Error removing amount from savings record: ', error);
+            res.status(500).json({ error: 'Internal server error while removing amount from savings record' });
         }
     }
 }
