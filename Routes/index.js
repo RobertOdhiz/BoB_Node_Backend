@@ -42,6 +42,7 @@ router.delete('/chats/:chatId/messages/:messageId', ChatsController.authenticate
 router.post('/savings', SavingsController.authenticateUser, SavingsController.postSavings);
 router.get('/savings/:savingsId', SavingsController.authenticateUser, SavingsController.getSavings);
 router.get('/savings', SavingsController.authenticateUser, SavingsController.getAllSavings);
+router.post('/savings/remove', SavingsController.authenticateUser, SavingsController.removeAmount); // New route for removing amount
 
 // Modules Routes (Requires Authentication)
 router.post('/modules', ModulesController.authenticateUser, ModulesController.createModule);
