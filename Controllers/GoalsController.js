@@ -1,5 +1,5 @@
 const dbClient = require('../Utils/db');
-const GeminiTextAI = require('../Utils/geminiText')
+const GeminiTextAI = require('../Utils/geminiText');
 
 const DBClient = new dbClient();
 
@@ -33,7 +33,8 @@ class GoalsController {
     static async setGoal(req, res) {
         const { title, description, dueDate } = req.body;
         const userId = req.user.uid;
-    
+        const setDate = new Date(); // Current date and time
+
         try {
             if (!title) {
                 return res.status(400).json({ "error": 'Goal Title is required' });
@@ -44,9 +45,9 @@ class GoalsController {
             if (!dueDate) {
                 return res.status(400).json({ "error": 'Due Date is required' });
             }
-    
+
             // Directly assign properties to goal object
-            const goal = { title, description, dueDate };
+            const goal = { title, description, dueDate, setDate };
             const advice = await GeminiTextAI.getGoalAdvice(goal, req.user);
             // console.log("AI Advice in Set Goal: ", advice);
             await DBClient.post('goals', { userId, ...goal, achieved: false, advice });
@@ -56,8 +57,6 @@ class GoalsController {
             res.status(500).json({ "error": 'Goal setting failed' });
         }
     }
-    
-    
 
     static async getGoals(req, res) {
         const userId = req.user.uid;
