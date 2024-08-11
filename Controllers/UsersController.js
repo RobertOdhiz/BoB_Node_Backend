@@ -1,4 +1,4 @@
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } = require('firebase/auth');
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } = require('firebase/auth');
 const dbClient = require('../Utils/db');
 const { v4: uuidv4 } = require('uuid');
 
