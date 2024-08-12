@@ -1,7 +1,7 @@
 
 # Bob - Financial Literacy Platform Backend
 
-Bob is a financial literacy platform designed to educate users on goal setting and savings using Gemini AI technology. This repository contains the backend server for Bob, built with Node.js, SQLite3, and Express.js.
+Bob is a financial literacy platform designed to educate users on goal setting and savings using Gemini AI technology. This repository contains the backend server for Bob, built with Node.js, Express.js and integrated with Gemini AI and Firebase.
 
 ## Contents
 
