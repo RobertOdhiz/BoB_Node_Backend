@@ -90,23 +90,22 @@ class AssessmentController {
     
 
     static async getAnswerQuestions(req, res) {
-    const userId = req.user.uid;
+        const userId = req.user.uid;
 
-    try {
-        const answersSnapshot = await DBClient.collection('AssessmentAnswers')
-            .where('userId', '==', userId)
-            .get();
+        try {
+            // Fetch answers using getAll with userId
+            const { count, AssessmentAnswers } = await DBClient.getAll('AssessmentAnswers', userId);
 
-        if (answersSnapshot.empty) {
-            return res.status(404).json({ error: `No answers found for the user uid: ${userId}` });
+            if (count === 0) {
+                return res.status(404).json({ error: `No answers found for the user uid: ${userId}` });
+            }
+
+            const answers = Object.values(AssessmentAnswers);
+            res.status(200).json(answers);
+        } catch (error) {
+            console.error('Error retrieving answers:', error);
+            res.status(500).json({ error: 'failed-to-retrieve-answers' });
         }
-
-        const answers = answersSnapshot.docs.map(doc => doc.data());
-        res.status(200).json(answers);
-    } catch (error) {
-        console.error('Error retrieving answers:', error);
-        res.status(500).json({ error: 'failed-to-retrieve-answers' });
-    }
     }
 }
 
