@@ -30,25 +30,6 @@ class GoalsController {
         }
     }
 
-    static async updateGoal(req, res) {
-        const goalId = req.params.id;
-        const userId = req.user.uid;
-        const { achieved } = req.body;
-
-        try {
-            const goalDoc = await DBClient.get('goals', goalId);
-            if (!goalDoc || goalDoc.userId !== userId) {
-                return res.status(404).json({ "error": 'Goal Not Found' });
-            }
-
-            await DBClient.set('goals', goalId, { ...goalDoc, achieved });
-            res.json({ message: 'Goal updated successfully' });
-        } catch (error) {
-            console.error('Error updating goal:', error);
-            res.status(500).json({ "error": 'Updating goal status failed' });
-        }
-    }
-
     static async setGoal(req, res) {
         const { title, description, dueDate } = req.body;
         const userId = req.user.uid;
