@@ -16,7 +16,26 @@ class UsersController {
                 await updateProfile(userCredential.user, { displayName });
             }
 
-            res.status(201).json({ message: 'User registered successfully' });
+            const user = userCredential.user;
+    
+            // Check if there's an existing session for the user
+            const sessionSnapshot = await DBClient.db.collection('authenticatedUsers')
+                .where('uid', '==', user.uid)
+                .where('loggedIn', '==', true)
+                .get();
+    
+            if (sessionSnapshot.empty) {
+                const sessionId = uuidv4();
+                const sessionData = { uid: user.uid, email: user.email, loggedIn: true, sessionId };
+    
+                const docRefId = await DBClient.post('authenticatedUsers', sessionData);
+                res.json({ message: 'Registration successfull', user, token: `auth_${docRefId}` });
+            } else {
+                // Extract the ID of the first document from the snapshot
+                const existingSessionId = sessionSnapshot.docs[0].id;
+                console.log("Existing Session ID: ", existingSessionId);
+                res.json({ message: 'Login Successfull', user, token: `auth_${existingSessionId}` });
+            }
         } catch (error) {
             let errorCode = 'An error occurred';
 
